@@ -1,0 +1,13 @@
+1. Intro:
+  - What is the name of your language?
+  - What is the language’s paradigm?
+  - (optional) is there anything especially unique or interesting
+
+2. Design:
+  - What features does your language include?
+  - What level does each feature fall under and how did you determine this?
+  - What are the safety properties of your language?
+
+3. Implementation:
+  - What semantic domains did you choose for your language? How did you decide on these?
+  - Are there any unite or interesting aspects of your implementation you’d like to describe?
