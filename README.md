@@ -28,11 +28,11 @@
         -- Expected output : 0
       - DoTheSub(True bool, 5 int)
       	-- Expected output: Error
-			- DoTheMult(5 int, 5 int)
-				-- Expected output: 25
+	- DoTheMult(5 int, 5 int)
+	-- Expected output: 25
       - DoTheMult(5 int, False bool)
       	-- Expected output: Error
-			- DoTheDiv(30 int, 5 int)
-				-- Expected output: 6
+	- DoTheDiv(30 int, 5 int)
+	-- Expected output: 6
       - DoTheDiv(True bool, 5 int)
       	-- Expected output: Error
