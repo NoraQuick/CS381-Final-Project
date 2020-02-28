@@ -1,8 +1,8 @@
 # CS381-Final-Project
 
 1. Team members' names and ONIDs:
-  - Thiem Nam (namt)
-  - Zachary Parsons (parsonsz)
+  - Thien Nam (namt)
+  - Zach Parsons (parsonsz)
   - Luke Puppo (puppol)
   - Nora Quick (quickn)
 
@@ -13,11 +13,13 @@
   - If your language implementation is intended to be run from GHCi, which module should be loaded?:
       - NQPP.hs
   - If your language implementation is intended to be run from the command line, what command should be executed?:
-      - DoTheAdd
-      - DoTheSub
-      - DoTheMult
-      - DoTheDiv
+      - Since our types are represented (shown as t in these examples) as CI(int), CB(bool), CF(float), or CS(string), for:
+      - Add, you type "smt (t n :+: t n)
+      - Subtract, you type "smt (t n :-: t n)
+      - Multiply, you type "smt (t n :*: t n)
+      - Divide, you type "smt (t n :/: t n)
       - Etc.
+      - Obviously, all of these operators work for intergers and floats, but for bools and strings, only addition and subtraction will work, but they are not functional in our milestone implementation yet.
 
   - Include precise commands needed to execute both your good examples and bad examples together with expected output.:
   	- We have 6 examples so far. They are labeled ex1 through ex6. To run one call the example you want.
