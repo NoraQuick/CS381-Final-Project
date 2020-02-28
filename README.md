@@ -20,19 +20,4 @@
       - Etc.
 
   - Include precise commands needed to execute both your good examples and bad examples together with expected output.:
-      - DoTheAdd(5 int, 5 int)
-        -- Expected output: 10
-     	 - DoTheAdd(True bool, 5 int)
-      	-- Expected output: Error
-      - DoTheSub(5 int, 5 int) 
-        -- Expected output : 0
-      	- DoTheSub(True bool, 5 int)
-      	-- Expected output: Error
-	- DoTheMult(5 int, 5 int)
-	-- Expected output: 25
-      - DoTheMult(5 int, False bool)
-      	-- Expected output: Error
-	- DoTheDiv(30 int, 5 int)
-	-- Expected output: 6
-      - DoTheDiv(True bool, 5 int)
-      	-- Expected output: Error
+  	- We have 6 examples so far. They are labeled ex1 through ex6. To run one call the example you want.
