@@ -22,5 +22,6 @@
       - Obviously, all of these operators work for intergers and floats, but for bools and strings, only addition and subtraction will work, but they are not functional in our milestone implementation yet.
 
   - Include precise commands needed to execute both your good examples and bad examples together with expected output.:
-  	- We have 6 examples so far. They are labeled ex1 through ex7. To run one call the example you want.
-    - Please only do ex3 through ex7. As of this milestone those examples work but because of an issue with precedence we cannot get example 1 and 2 working.
+  	- We have 6 examples so far. They are labeled ex1 through ex8. To run one call the example you want.
+    - Please only do ex3 through ex8 (ex8 is string addition). As of this milestone those examples work but because of an issue with precedence we cannot get example 1 and 2 working.
+    
