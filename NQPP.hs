@@ -14,40 +14,42 @@ type StngVar = String
 type IntVar = Int
 type BoolVar = Bool
 
-infixl 1 .=.
-infixl 2 .+., .-.
-infixl 3 .*., ./.
+infixl 1 :
+infixl 2 :+:, :-:
+infixl 3 :*:, :/:
 
 data Expr = Const Int
-	  | Var Var
-	  | Expr .+. Expr
-	  | Expr .-. Expr
-	  | Expr .*. Expr
-	  | Expr ./. Expr
+	  | Expr :+: Expr
+	  | Expr :-: Expr
+	  | Expr :*: Expr
+	  | Expr :/: Expr
 
-data Cmd = Var := Expr
-	 | While Expr Cmd
+data Cmd = 
+	 -- | While Expr Cmd
 
-type Prog = [Cmd]
+cmd :: Cmd -> State -> (State, Maybe Line)
+cmd = undefined
 
+prog :: Prog -> State -> (State, [Line])
+prog = undefined
 
--- | ??
-DoTheAdd
-DoTheAdd
-
-DoTheSub
-DoTheSub
-
-DoTheMult
-DoTheMult
-
-DoTheDiv
-DoTheDiv
 
 
 -- | ??
-cmd
-cmd
+DoTheAdd = undefined
 
-prog
-prog
+
+DoTheSub = undefined
+
+
+DoTheMult = undefined
+
+
+DoTheDiv = undefined
+
+
+
+-- | ??
+cmd = undefined
+
+prog = undefined
