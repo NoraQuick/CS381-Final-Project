@@ -22,7 +22,8 @@
 	- Are there any unite or interesting aspects of your implementation you’d like to describe?:
 		- As of the project milestone we are not doing anything unique. We are trying to get the basics down first.
 		
- # 4. Questions
+4. Questions
+	- How can we get our examples to run? In reference to Walkingshaw's IntBool.hs he has examples that run before he implements anything else. Therefore, shouldn't there be a way to get our to run without any reliance on the rest of our code?
 	- We are trying to figure out how to cut down our current implementation as it is very messy, which is mainly due to some confusion about how to represent four different data types (Int, Bool, Float, and String) as something like Either, but obviously for four things instead of two. Is there a simple way to do this so we can wrap and unwrap these data types easily by doing things similar to Left and Right for Either?
 	- How do we go about implementing greater than and less than?
 	- We are confused with how to use our smt function, which will also cause confusion when we start to create sequences of these in order to create programs and evaluate larger expressions.
