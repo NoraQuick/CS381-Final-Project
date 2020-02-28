@@ -1,8 +1,8 @@
 # CS381-Final-Project
 
 1. Team members' names and ONIDs:
-  - Thiem Nam (namt)
-  - Zachary Parsons (parsonsz)
+  - Thien Nam (namt)
+  - Zach Parsons (parsonsz)
   - Luke Puppo (puppol)
   - Nora Quick (quickn)
 
@@ -13,26 +13,15 @@
   - If your language implementation is intended to be run from GHCi, which module should be loaded?:
       - NQPP.hs
   - If your language implementation is intended to be run from the command line, what command should be executed?:
-      - DoTheAdd
-      - DoTheSub
-      - DoTheMult
-      - DoTheDiv
+      - Since our types are represented (shown as t in these examples) as CI(int), CB(bool), CF(float), or CS(string), for:
+      - Add, you type "smt (t n :+: t n)
+      - Subtract, you type "smt (t n :-: t n)
+      - Multiply, you type "smt (t n :*: t n)
+      - Divide, you type "smt (t n :/: t n)
       - Etc.
+      - Obviously, all of these operators work for intergers and floats, but for bools and strings, only addition and subtraction will work, but they are not functional in our milestone implementation yet.
 
   - Include precise commands needed to execute both your good examples and bad examples together with expected output.:
-      - DoTheAdd(5 int, 5 int)
-        -- Expected output: 10
-     	 - DoTheAdd(True bool, 5 int)
-      	-- Expected output: Error
-      - DoTheSub(5 int, 5 int) 
-        -- Expected output : 0
-      	- DoTheSub(True bool, 5 int)
-      	-- Expected output: Error
-	- DoTheMult(5 int, 5 int)
-	-- Expected output: 25
-      - DoTheMult(5 int, False bool)
-      	-- Expected output: Error
-	- DoTheDiv(30 int, 5 int)
-	-- Expected output: 6
-      - DoTheDiv(True bool, 5 int)
-      	-- Expected output: Error
+  	- We have 6 examples so far. They are labeled ex1 through ex8. To run one call the example you want.
+    - Please only do ex3 through ex8 (ex8 is string addition). As of this milestone those examples work but because of an issue with precedence we cannot get example 1 and 2 working.
+    
