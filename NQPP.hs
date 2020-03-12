@@ -12,8 +12,6 @@ import Prelude hiding (lookup)
 -- * Abstract syntax
 --
 
-type Var = String
-
 -- Abstract syntax of expressions
 --
 --     exp  ::=   value
@@ -98,47 +96,44 @@ type Var = String
 
 infix 1 :=
 
-data Stmt
-  = Var := Exp      -- assignment
-  -- | While Exp Stmt  -- loop
-	-- | Eval Exp
-  -- | Seq [Stmt]      -- sequence
-
 -- type Prog = Stmt
 -- type Val = Int
 -- type Assign = [(Var, Exp)]
 
-
-
-
-
-data Value
-   = Int
-   | Bool
-   | Float
-   | String
-  deriving (Eq,Show)
+-- data Value
+--    = Int
+--    | Bool
+--    | Float
+--    | String
+--    deriving (Eq,Show)
 
 data Exp
-   = Lit Value
-   | Add Exp Exp
-   | Mul Exp Exp
-   | Equ Exp Exp
-   | If  Exp Exp Exp
+   = I Int
+   | F Float
+   | S String
+   | Add Exp Exp -- addition
+   | Sub Exp Exp -- subtraction
+   | Mul Exp Exp -- multiplication
+   | Div Exp Exp -- division
+   | Equ Exp Exp -- checking if two expressions are equal
+   | Ref Var     -- referencing an environment variable
   deriving (Eq,Show)
 
-  --
-  -- * Type system
-  --
-
-  -- | Variable environments. An environment maps variable names to the
-  --   things those variable names are bound to. During typing, each name
-  --   will be bound to a type, while during evaluation (semantics), each
-  --   name will be bound to a value.
-type Env a = Map Var a
+data Stmt
+  = Bind Var Exp      -- assignment
+  | While Exp Stmt  -- loop
+  | If Expr Stmt Stmt
+  | Seq [Stmt]      -- sequence
 
 data Type = TBool | TInt | TFloat | TString
   deriving (Eq,Show)
+
+type Decl = (Var,Type)
+
+data Prog = P [Decl] Stmt
+  deriving (Eq,Show)
+
+type Env a = Map Var a
 
 -- ex1 = [
 --       a = 8
@@ -149,29 +144,48 @@ data Type = TBool | TInt | TFloat | TString
 --      print a
 -- ]
 
--- 8 :+: 2.1
--- (Add (I 8) (F 2.1))
-
--- 2. Define the typing relation.
+-- 2. Define the typing relation. (type checking)
 typeExpr :: Expr -> Env Type -> Maybe Type
-typeExpr (Lit _)   _ = Just TInt
+typeExpr (I _)   _ = Just TInt
+typeExpr (F _)   _ = Just TFloat
+typeExpr (S _)   _ = Just TString
 typeExpr (Add l r) m = case (typeExpr l m, typeExpr r m) of
-                         (Just TInt, Just TInt) -> Just TInt
-                         (Just TFloat, TFloat) -> Just TFloat
-                         (Just TBool, Just TBool) -> Just TBool
-                         (Just TString, TString) -> Just TString
-                         _                      -> Nothing
+                        (Just TInt, Just TInt) -> Just TInt
+                        (Just TInt, Just TFloat) -> Just TFloat
+                        (Just TFloat, Just TFloat) -> Just TFloat
+                        (Just TFloat, Just TInt) -> Just TFloat
+                        (Just TBool, Just TBool) -> Just TBool
+                        (Just TString, Just TString) -> Just TString
+                        _                      -> Nothing
+typeExpr (Sub l r) m = case (typeExpr l m, typeExpr r m) of
+                        (Just TInt, Just TInt) -> Just TInt
+                        (Just TInt, Just TFloat) -> Just TFloat
+                        (Just TFloat, Just TFloat) -> Just TFloat
+                        (Just TFloat, Just TInt) -> Just TFloat
+                        (Just TBool, Just TBool) -> Just TBool
+                        _                      -> Nothing
 typeExpr (Mul l r) m = case (typeExpr l m, typeExpr r m) of
-                         (Just TInt, Just TInt) -> Just TInt
-                         (Just TFloat, Just TFloat) -> Just TFloat
-                         (Just TInt, Just TFloat) -> Just TFloat
-                         (Just TFloat, Just TInt) -> Just TFloat
-                         _                      -> Nothing
-typeExpr (Not e)   m = case typeExpr e m of
-                         Just TBool -> Just TBool
+                        (Just TInt, Just TInt) -> Just TInt
+                        (Just TFloat, Just TFloat) -> Just TFloat
+                        (Just TInt, Just TFloat) -> Just TFloat
+                        (Just TFloat, Just TInt) -> Just TFloat
+                        _                      -> Nothing
+typeExpr (Div l r) m = case (typeExpr l m, typeExpr r m) of
+                        (Just TInt, Just TInt) -> Just TFloat
+                        (Just TFloat, Just TFloat) -> Just TFloat
+                        (Just TInt, Just TFloat) -> Just TFloat
+                        (Just TFloat, Just TInt) -> Just TFloat
+                        _                      -> Nothing
+typeExpr (Equ l r) m = case (typeExpr l m, typeExpr r m) of
+                         (Just TInt, Just TInt) -> Just TBool
+                         (Just TFloat, Just TFloat) -> Just TBool
+                         (Just TBool, Just TBool) -> Just TBool
+                         (Just TString, Just TString) -> Just TBool
                          _          -> Nothing
 typeExpr (Ref v)   m = lookup v m
 
+-- Type checking of statements (not all of these statements are actually returning bools,
+-- but rather checking if the statement itself has type correct elements)
 typeStmt :: Stmt -> Env Type -> Bool
 typeStmt (Bind v e)   m = case (lookup v m, typeExpr e m) of
                             (Just tv, Just te) -> tv == te
@@ -182,31 +196,24 @@ typeStmt (If c st se) m = case typeExpr c m of
 typeStmt (While c sb) m = case typeExpr c m of
                             Just TBool -> typeStmt sb m
                             _ -> False
-typeStmt (Block ss)   m = all (\s -> typeStmt s m) ss
+typeStmt (Seq ss)   m = all (\s -> typeStmt s m) ss
 
 typeProg :: Prog -> Bool
 typeProg (P ds s) = typeStmt s (fromList ds)
 
 
 
-
--- | The basic values in our language.
 type Val = Either (Either Int Float) (Either Bool String)
 
--- | Semantics of type-correct expressions. Note that since we assume the
---   expression is statically type correct (otherwise it would have failed
---   type checking and we never try to evaluate it), we do not need to
---   explicitly represent the error case with a Maybe type. Also note that
---   our environment now contains the *value* that each name is bound to.
---   Since expressions can refer to variables but not change them, the
---   environment is read-only (i.e. it's an input but not an output of the
---   function).
-
-
+-- calls the expressions after using helper functions to unwrap each type, then rewraps the result in the correct type
 evalExpr :: Expr -> Env Val -> Val
-evalExpr (Lit i)   _ = Left i
-evalExpr (Add l r) m = Left (evalInt l m + evalInt r m)
-evalExpr (Add l r) m = Left (evalInt l m + evalInt r m)
+evalExpr (I i)   _ = Left (Left i)
+evalExpr (F f)   _ = Left (Right f)
+evalExpr (S s)   _ = Right (Right s)
+evalExpr (Add l r) m = case (evalInt l m, e)
+-- evalExpr (Add l r) m = case (l m, l r)
+--                            int   -> Left (Left (evalInt(l m) + evalInt(r m)))
+--                            float ->
 
 evalExpr (LTE l r) m = Right (evalInt l m <= evalInt r m)
 evalExpr (Not e)   m = Right (not (evalBool e m))
@@ -220,19 +227,28 @@ evalExpr (Ref x)   m = case lookup x m of
 --   wrote above.
 evalInt :: Expr -> Env Val -> Int
 evalInt e m = case evalExpr e m of
-                Left i  -> i
-                Right _ -> error "internal error: expected Int got Bool"
+                Left (Left i)  -> i
+                _ -> error "internal error: expected Int"
+
+-- | Helper function to evaluate an expression to a Boolean.
+evalFloat :: Expr -> Env Val -> Float
+evalFloat e m = case evalExpr e m of
+                Left (Right f) -> f
+                _  -> error "internal error: expected Float"
 
 -- | Helper function to evaluate an expression to a Boolean.
 evalBool :: Expr -> Env Val -> Bool
 evalBool e m = case evalExpr e m of
-                 Right b -> b
-                 Left _  -> error "internal error: expected Bool got Int"
+                 Right (Left b) -> b
+                 _  -> error "internal error: expected Bool"
 
--- | Semantics of statements. Statements update the bindings in the
---   environment, so the semantic domain is 'Env Val -> Env Val'. The
---   bind case is the case that actually changes the environment. The
---   other cases should look similar to other examples you've seen.
+-- | Helper function to evaluate an expression to a Boolean.
+evalString :: Expr -> Env Val -> String
+evalString e m = case evalExpr e m of
+                Right (Right s) -> s
+                _  -> error "internal error: expected String"
+
+
 evalStmt :: Stmt -> Env Val -> Env Val
 evalStmt (Bind x e)   m = insert x (evalExpr e m) m
 evalStmt (If c st se) m = if evalBool c m
@@ -243,21 +259,17 @@ evalStmt (While c sb) m = if evalBool c m
                           else m
 evalStmt (Block ss)   m = evalStmts ss m
 
--- | Helper function to evaluate a list of statements. We could also
---   have used 'foldl' here.
 evalStmts :: [Stmt] -> Env Val -> Env Val
 evalStmts []     m = m
 evalStmts (s:ss) m = evalStmts ss (evalStmt s m)
 
--- | Semantics of programs. This runs a program with an initial
---   environment where all integer variables are initialized to 0, and
---   all Boolean variables are initialized to false.
 evalProg :: Prog -> Env Val
 evalProg (P ds s) = evalStmt s m
   where
     m = fromList (map (\(x,t) -> (x, init t)) ds)
     init TInt  = Left 0
     init TBool = Right False
+    -- (NEED TO ADD OTHERS HERE)
 
 -- | Type check and then run a program.
 runProg :: Prog -> Maybe (Env Val)
