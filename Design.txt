@@ -19,5 +19,5 @@
 3. Implementation
 	- What semantic domains did you choose for your language? How did you decide on these?:
 		- Strings, Booleans, Floats and Integers. We chose these because they seem the most practical and fundamental to any language, especially imperative languages such as C.
-	- Are there any unite or interesting aspects of your implementation you’d like to describe?:
+	- Are there any unique or interesting aspects of your implementation you’d like to describe?:
 		- N/A
