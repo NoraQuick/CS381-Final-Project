@@ -14,7 +14,7 @@
 		- Strings and operations, as well as array data-type and operations, fall under core features as they are crucial to he expressiveness of our language.
 		- Strings and operations fall under syntactic sugar and (??) static type system fall under library-level.
 	- What are the safety properties of your language?:
-		- Memory safety.
+		- Static type safety.
 
 3. Implementation
 	- What semantic domains did you choose for your language? How did you decide on these?:
