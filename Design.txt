@@ -5,25 +5,20 @@
 		- Imperative
 	- (optional) is there anything especially unique or interesting: 
 		- It's written by 4 pretty awesome people! :)
+		- (??) We also use infixs in our language
 
 2. Design
 	- What features does your language include?:
 		- Basic data types and operations, conditionals, recursion/loops, variables/local names, procedures/functions with 		      arguments, stack manipulation operations.
-		- List/array data type and operations (2) and Strings and operations (1).
+		- (??)Static type system (2) and Strings and operations (1).
 	- What level does each feature fall under and how did you determine this?:
-		- Strings and operations, as well as array data-type and operations, fall under core features as they are crucial to 			the expressiveness of our language.
-		- Strings and operations fall under syntactic sugar and list/array data types and operands fall under library-level.
+		- Strings and operations, as well as array data-type and operations, fall under core features as they are crucial to he expressiveness of our language.
+		- Strings and operations fall under syntactic sugar and (??) static type system fall under library-level.
 	- What are the safety properties of your language?:
 		- Memory safety.
 
 3. Implementation
 	- What semantic domains did you choose for your language? How did you decide on these?:
-		- Strings, Booleans, and Integers. We chose these because they seem the most practical and fundamental to any language, especially imperative languages such as C.
+		- Strings, Booleans, Floats and Integers. We chose these because they seem the most practical and fundamental to any language, especially imperative languages such as C.
 	- Are there any unite or interesting aspects of your implementation you’d like to describe?:
-		- As of the project milestone we are not doing anything unique. We are trying to get the basics down first.
-		
-4. Questions
-	- How can we get our examples to run? In reference to Walkingshaw's IntBool.hs he has examples that run before he implements anything else. Therefore, shouldn't there be a way to get our to run without any reliance on the rest of our code?
-	- We are trying to figure out how to cut down our current implementation as it is very messy, which is mainly due to some confusion about how to represent four different data types (Int, Bool, Float, and String) as something like Either, but obviously for four things instead of two. Is there a simple way to do this so we can wrap and unwrap these data types easily by doing things similar to Left and Right for Either?
-	- How do we go about implementing greater than and less than?
-	- We are confused with how to use our smt function, which will also cause confusion when we start to create sequences of these in order to create programs and evaluate larger expressions.
+		- (??) N/A
