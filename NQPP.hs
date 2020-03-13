@@ -7,9 +7,9 @@ import Data.Maybe (fromJust)
 import Data.String
 import Prelude hiding (lookup, LT, GT)
 
---
--- * Abstract Syntax
---
+-- ***********************
+-- Abstract Syntax
+-- ***********************
 
 -- | Current State
 type State = Map Name Var
@@ -28,6 +28,7 @@ data Expr = WeirdMathStuff Op Expr Expr
           | Get Name
         deriving(Eq,Show)
 
+
 -- | Abstract syntax of Variables
 --
 --    var ::= int
@@ -40,8 +41,9 @@ data Var = I Int
          | S String
         deriving(Eq,Show)
 
+
 -- | Abstract syntax of Commands
---
+
 --    cmd ::= newvar := expr
 --          | `while` expr prog
 --          | `if` expr prof `else` prog
@@ -51,8 +53,8 @@ data Cmd = Declare Name Expr
           | If Expr Prog Prog
           | Set Name Expr
 
+
 -- | Abstract syntax of Operations
---
 --    op ::= add
 --         | subtract
 --         | multiply
@@ -65,9 +67,10 @@ data Cmd = Declare Name Expr
 data Op = Add | Sub | Mult | Div | Equ | LTE | GTE | LT | GT
             deriving(Eq,Show)
 
--- ****************
+
+-- ***********************
 -- * Type Checking
---
+-- ***********************
 
 -- | Type checking Expressions
 typeExpr :: Expr -> State -> Maybe Var
@@ -117,9 +120,7 @@ typeExpr (WeirdMathStuff Equ l r) m = case (typeExpr l m, typeExpr r m) of
                         (Just (S _), Just (S _)) -> Just (B True)
                         _                    -> Nothing
 
--- ***********************
--- Type checking Commands
--- ***********************
+-- | Type checking Commands
 typeCmd :: Cmd -> State -> Bool
 typeCmd (Declare n e) s = case (lookup n s, typeExpr e s) of
                            (Just tn, Just te) -> tn == te
@@ -156,12 +157,10 @@ cmd (If e p1 p2) s = case expr e s of
             (B b) -> if b then run p1 s else run p2 s
 cmd (Set n e) s = set n e s
 
-
 expr :: Expr -> State -> Var
 expr (Lit v) s = v
 expr (Get n) s = get n s
 expr (WeirdMathStuff o e1 e2) s = weirdMathStuff o (expr e1 s) (expr e2 s)
-
 
 weirdMathStuff :: Op -> Var -> Var -> Var
 -- Ints
@@ -198,7 +197,6 @@ set :: Name -> Expr -> State -> State
 set name e s = adjust (\x -> expr e s) name s
 
 
-
 -- ***********************
 -- Good Example Functions
 -- ***********************
@@ -222,6 +220,7 @@ whileProg = run [Declare "a" (Lit (I 0)),
                 [Set "a" (WeirdMathStuff Add (Get "a") (Lit(I 1)))],
                 Declare "finalVal" (Get "a")
                ] empty
+
 -- String Addition Example
 stringProg = run [
              Declare "s1" (Lit (S "Hello")),
@@ -233,14 +232,15 @@ stringProg = run [
 -- Bad Example Functions
 -- ***********************
 
-   -- Fails static type checking
+-- Fails static type checking
 fail1 = run [Declare "a" (Lit (I 0)),
                 Declare "b" (Lit (S "hello")),
                 While (WeirdMathStuff LT (Get "a") (Get "b"))
                 [Set "a" (WeirdMathStuff Add (Get "a") (Lit(I 1)))],
                 Declare "finalVal(Should be 10)" (Get "a")
                ] empty
-   -- Fails to get a variable
+
+-- Fails to get a variable
 fail2 = run [
           Declare "var" (Lit (I 2)),
           If (Get "var2")
