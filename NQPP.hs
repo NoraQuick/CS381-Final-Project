@@ -141,14 +141,17 @@ typeCmdList (p:ps) s = typeCmd p s && typeCmdList ps s
 -- Semantics
 -- ***********************
 
+-- This actually runs the program and updates the state.
 run :: Prog -> State -> State
 run [] s = s
 run (c:cs) s = run cs (cmd c s)
 
+-- This calls the type check for the commands in order to verify the running of the program
 runProg :: Prog -> State -> Maybe State
 runProg p s = if typeCmdList p s then Just (run p s)
                                  else Nothing
 
+-- This runs all of the commands, such as the while loops, if statements, and setting of variables. These update the variables, which therefore updates the state.
 cmd :: Cmd -> State -> State
 cmd (Declare n e) s = insert n (expr e s) s
 cmd (While e p) s = case expr e s of
@@ -157,13 +160,15 @@ cmd (If e p1 p2) s = case expr e s of
             (B b) -> if b then run p1 s else run p2 s
 cmd (Set n e) s = set n e s
 
+-- This runs the expressions and turns them into usable variables.
 expr :: Expr -> State -> Var
 expr (Lit v) s = v
 expr (Get n) s = get n s
 expr (WeirdMathStuff o e1 e2) s = weirdMathStuff o (expr e1 s) (expr e2 s)
 
+-- This runs all the mathematics possible, including addition, subtraction, multiplication, and division of applicable variables.
 weirdMathStuff :: Op -> Var -> Var -> Var
--- Ints
+-- | Ints
 weirdMathStuff Add (I i1) (I i2) = I (i1 + i2)
 weirdMathStuff Sub (I i1) (I i2) =  I (i1 - i2)
 weirdMathStuff Mult (I i1) (I i2) = I (i1 * i2)
@@ -173,7 +178,7 @@ weirdMathStuff LTE (I i1) (I i2) = B (i1 <= i2)
 weirdMathStuff GTE (I i1) (I i2) = B (i1 >= i2)
 weirdMathStuff LT (I i1) (I i2) = B (i1 < i2)
 weirdMathStuff GT (I i1) (I i2) = B (i1 > i2)
--- Floats
+-- | Floats
 weirdMathStuff Add (F f1) (F f2) = F (f1 + f2)
 weirdMathStuff Sub (F f1) (F f2) = F (f1 - f2)
 weirdMathStuff Mult (F f1) (F f2) = F (f1 * f2)
@@ -183,16 +188,18 @@ weirdMathStuff LTE (F f1) (F f2) = B (f1 <= f2)
 weirdMathStuff GTE (F f1) (F f2) = B (f1 >= f2)
 weirdMathStuff LT (F f1) (F f2) = B (f1 < f2)
 weirdMathStuff GT (F f1) (F f2) = B (f1 > f2)
--- Strings
+-- | Strings
 weirdMathStuff Add (S s1) (S s2) = S (s1 ++ s2)
--- Error
+-- | Error
 weirdMathStuff _ _ _ = error "internal error: Types are incorrect after statically type checking"
 
+-- This gets the variable value from the current state.
 get :: Name -> State -> Var
 get name s = case lookup name s of
               (Just v) -> v
               Nothing -> error "Internal Error: Attempted to get a value that has not been declared"
 
+-- This updates the variable's value in the current state.
 set :: Name -> Expr -> State -> State
 set name e s = adjust (\x -> expr e s) name s
 
