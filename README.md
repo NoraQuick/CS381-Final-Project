@@ -16,7 +16,7 @@
       - N/A
 
   - Include precise commands needed to execute both your good examples and bad examples together with expected output.:
-  	- For the good examples please use exprogsucc, ifprogsucc, and whileprogsucc. 
-    - For the bad examples please use fail1, fail2, and fail3.
+  	- For the good examples please use exprog, ifprog, whileprog, and stringProg. 
+    - For the bad examples please use fail1 and fail2.
  
     
